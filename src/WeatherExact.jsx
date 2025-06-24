@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 import cloudy from "./assets/icons/partly_cloudy.png";
 import rainy from "./assets/icons/rainy.png";
 import thunder from "./assets/icons/thunder.png";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import {
-  Line,
   XAxis,
   YAxis,
-  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area,
@@ -130,13 +128,6 @@ function WeatherExact() {
 
   const groupedForecast = unit === "metric" ? forecastMetric : forecastImperial;
 
-  console.log(uiState.currentData);
-  const testData = [
-    { datetime: new Date("2023-01-01T17:00:00"), temp: 35 },
-    { datetime: new Date("2023-01-01T20:00:00"), temp: 33 },
-    // ... add all the values from your reference image
-  ];
-
   // Optional: Guard if no data loaded yet
   if (loading) return <div>Loading...</div>;
 
@@ -163,6 +154,16 @@ function WeatherExact() {
               src={getWeatherIcon(uiState.latestDataPoint.condition)}
               alt="Current Condition"
             />
+        {/* One look data */}
+        <div className="flex flex-row">
+          {/* Left Side */}
+          <div className="flex flex-row items-start gap-4">
+            {/* Weather Icon */}
+            <img
+              className="w-[50px] h-[50px]"
+              src={getWeatherIcon(uiState.latestDataPoint.condition)}
+              alt="Current Condition"
+            />
 
             {/* Temperature + Units */}
             <div className="flex items-start gap-1 text-5xl ">
@@ -170,7 +171,37 @@ function WeatherExact() {
               <span className="text-5xl font-normal text-black dark:text-white">
                 {uiState.latestDataPoint.temp}
               </span>
+            {/* Temperature + Units */}
+            <div className="flex items-start gap-1 text-5xl ">
+              {/* Temperature */}
+              <span className="text-5xl font-normal text-black dark:text-white">
+                {uiState.latestDataPoint.temp}
+              </span>
 
+              <span
+                className={`text-lg cursor-pointer ${
+                  unit === "metric"
+                    ? "text-slate-300 dark:text-slate-500"
+                    : "text-slate-400 dark:text-slate-600"
+                }`}
+                onClick={() => setUnit("metric")}
+              >
+                °C
+              </span>
+              <span className="text-lg text-slate-500 dark:text-slate-400">
+                |
+              </span>
+              <span
+                className={`text-lg cursor-pointer ${
+                  unit === "imperial"
+                    ? "text-slate-300 dark:text-slate-500"
+                    : "text-slate-400 dark:text-slate-600"
+                }`}
+                onClick={() => setUnit("imperial")}
+              >
+                °F
+              </span>
+            </div>
               <span
                 className={`text-lg cursor-pointer ${
                   unit === "metric"
@@ -210,6 +241,20 @@ function WeatherExact() {
               </p>
             </div>
           </div>
+            {/* Humidity and Wind */}
+            <div className="flex flex-col w-[200px] text-sm">
+              <p className="text-slate-500 dark:text-slate-400">
+                Precipitation: 0%
+              </p>
+              <p className="text-slate-500 dark:text-slate-400">
+                Humidity: {uiState.latestDataPoint.humidity ?? "--"}%
+              </p>
+              <p className="text-slate-500 dark:text-slate-400">
+                Wind: {uiState.latestDataPoint.wind ?? "--"}{" "}
+                {unitSymbols[unit].wind}
+              </p>
+            </div>
+          </div>
 
           {/* Right Side */}
           <div className="flex flex-row justify-end w-full">
@@ -229,7 +274,45 @@ function WeatherExact() {
             </div>
           </div>
         </div>
+          {/* Right Side */}
+          <div className="flex flex-row justify-end w-full">
+            <div className="flex flex-col justify-center items-end">
+              <p className="font-normal text-2xl text-black dark:text-white">
+                Weather
+              </p>
+              <p className="text-lg text-slate-500 dark:text-slate-400">
+                {format(uiState.latestDataPoint.datetime, "EEEE")}
+                {!uiState.dayHasBeenSelected && (
+                  <> {format(uiState.latestDataPoint.datetime, "h:mm aa")}</>
+                )}
+              </p>
+              <p className="text-slate-500 dark:text-slate-400">
+                {uiState.latestDataPoint.condition}
+              </p>
+            </div>
+          </div>
+        </div>
 
+        {/* Metric Selector + Graphs */}
+        <div className="flex flex-col gap-5">
+          {/* Metric Selector */}
+          <div className="flex flex-row items-center justify-start h-12 gap-3">
+            {Object.keys(metricLabels).map((metric, index, array) => (
+              <div key={metric} className="flex flex-row items-center">
+                <button
+                  onClick={() =>
+                    setUiState((prev) => ({
+                      ...prev,
+                      selectedMetric: metric,
+                    }))
+                  }
+                  className={`relative font-normal transition-colors text-black dark:text-white`}
+                >
+                  {metricLabels[metric]}
+                  {uiState.selectedMetric === metric && (
+                    <span className="absolute left-0 -bottom-2 w-full h-[3px] bg-yellow-400"></span>
+                  )}
+                </button>
         {/* Metric Selector + Graphs */}
         <div className="flex flex-col gap-5">
           {/* Metric Selector */}
@@ -373,6 +456,11 @@ function WeatherExact() {
             )}
           </div>
 
+          {/* Day Selector */}
+          <div className="flex flex-row justify-around pb-4 hide-scrollbar">
+            {Object.entries(groupedForecast).map(
+              ([dateKey, { label, entries }], index) => {
+                const preview = entries[0];
           {/* Day Selector */}
           <div className="flex flex-row justify-around pb-4 hide-scrollbar">
             {Object.entries(groupedForecast).map(
