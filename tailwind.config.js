@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}", // VERY important to cover all source files
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {},
   },

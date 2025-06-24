@@ -13,6 +13,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import WeatherExact from "./WeatherExact";
+import { DarkModeProvider } from "./contexts/DarkModeContext";
+import DarkModeToggle from "./components/DarkModeToggle";
 
 const apikey = "0ba8fcf6d9d33fb5bf748f3aed812efa";
 
@@ -91,7 +93,15 @@ function App() {
     condition: "Mostly Sunny",
     icon: "Clear",
   };
-  return <WeatherExact></WeatherExact>;
+  
+  return (
+    <DarkModeProvider>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <DarkModeToggle />
+        <WeatherExact />
+      </div>
+    </DarkModeProvider>
+  );
 
   // return (
   //   <div className="flex flex-col min-h-screen bg-cyan-100 items-center py-10 px-4 gap-6 ">

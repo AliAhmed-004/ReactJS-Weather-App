@@ -132,14 +132,14 @@ function WeatherExact() {
 
   // Optional: Guard if no data loaded yet
   if (!uiState.latestDataPoint || !uiState.currentData.length) {
-    return <div>Loading weather data...</div>;
+    return <div className="text-gray-900 dark:text-gray-100">Loading weather data...</div>;
   }
 
   return (
-    <div className="flex flex-col p-6 ">
+    <div className="flex flex-col p-6">
       {/* Current Location */}
-      <p className="text-slate-600 pb-8">
-        Results for <span className="font-bold text-black">Islamabad</span>
+      <p className="text-slate-600 dark:text-slate-400 pb-8">
+        Results for <span className="font-bold text-black dark:text-white">Islamabad</span>
       </p>
 
       {/* One look data */}
@@ -156,22 +156,22 @@ function WeatherExact() {
           {/* Temperature + Units */}
           <div className="flex items-start gap-1 text-5xl ">
             {/* Temperature */}
-            <span className="text-5xl font-normal">
+            <span className="text-5xl font-normal text-black dark:text-white">
               {uiState.latestDataPoint.temp}
             </span>
 
             <span
-              className={`text-lg  cursor-pointer ${
-                unit === "metric" ? " text-slate-300" : " text-slate-400"
+              className={`text-lg cursor-pointer ${
+                unit === "metric" ? "text-slate-300 dark:text-slate-500" : "text-slate-400 dark:text-slate-600"
               }`}
               onClick={() => setUnit("metric")}
             >
               °C
             </span>
-            <span className="text-lg text-slate-500">|</span>
+            <span className="text-lg text-slate-500 dark:text-slate-400">|</span>
             <span
-              className={`text-lg  cursor-pointer ${
-                unit === "imperial" ? " text-slate-300" : " text-slate-400"
+              className={`text-lg cursor-pointer ${
+                unit === "imperial" ? "text-slate-300 dark:text-slate-500" : "text-slate-400 dark:text-slate-600"
               }`}
               onClick={() => setUnit("imperial")}
             >
@@ -181,11 +181,11 @@ function WeatherExact() {
 
           {/* Humidity and Wind */}
           <div className="flex flex-col w-[200px] text-sm">
-            <p className="text-slate-500">Precipitation: 0%</p>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">Precipitation: 0%</p>
+            <p className="text-slate-500 dark:text-slate-400">
               Humidity: {uiState.latestDataPoint.humidity ?? "--"}%
             </p>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               Wind: {uiState.latestDataPoint.wind ?? "--"}{" "}
               {unitSymbols[unit].wind}
             </p>
@@ -195,14 +195,14 @@ function WeatherExact() {
         {/* Right Side */}
         <div className="flex flex-row justify-end w-full">
           <div className="flex flex-col justify-center items-end">
-            <p className="font-normal text-2xl text-black">Weather</p>
-            <p className="text-lg text-slate-500">
+            <p className="font-normal text-2xl text-black dark:text-white">Weather</p>
+            <p className="text-lg text-slate-500 dark:text-slate-400">
               {format(uiState.latestDataPoint.datetime, "EEEE")}
               {!uiState.dayHasBeenSelected && (
                 <> {format(uiState.latestDataPoint.datetime, "h:mm aa")}</>
               )}
             </p>
-            <p className="text-slate-500">
+            <p className="text-slate-500 dark:text-slate-400">
               {uiState.latestDataPoint.condition}
             </p>
           </div>
@@ -222,7 +222,7 @@ function WeatherExact() {
                     selectedMetric: metric,
                   }))
                 }
-                className={`relative font-normal transition-colors`}
+                className={`relative font-normal transition-colors text-black dark:text-white`}
               >
                 {metricLabels[metric]}
                 {uiState.selectedMetric === metric && (
@@ -232,17 +232,17 @@ function WeatherExact() {
 
               {/* Pipe separator except after the last item */}
               {index < array.length - 1 && (
-                <span className="mx-2 text-slate-200 text-2xl">|</span>
+                <span className="mx-2 text-slate-200 dark:text-slate-600 text-2xl">|</span>
               )}
             </div>
           ))}
         </div>
 
         {/* Graph */}
-        <div className="w-full h-fit py-7 bg-white rounded-lg">
+        <div className="w-full h-fit py-7 bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20">
           {uiState.selectedMetric === "wind" ? (
             // Wind Graph
-            <div className="flex flex-row justify-between items-center overflow-x-auto gap-4 h-full">
+            <div className="flex flex-row justify-between items-center overflow-x-auto gap-4 h-full ">
               {uiState.currentData.map((item, idx) => {
                 // Safely parse the datetime
                 const date = new Date(item.datetime);
@@ -253,7 +253,7 @@ function WeatherExact() {
                 return (
                   <div
                     key={`wind-${idx}`}
-                    className="flex flex-col items-center text-sm text-gray-600 justify-center gap-y-5 min-w-[50px] h-[120px]"
+                    className="flex flex-col items-center text-sm text-gray-600 dark:text-gray-300 justify-center gap-y-5 min-w-[50px] h-[120px]"
                   >
                     <p className="mt-1">
                       {item.wind ?? "--"} {unitSymbols[unit].wind}
@@ -267,7 +267,8 @@ function WeatherExact() {
                         height="20px"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="gray"
+                        stroke="currentColor"
+                        className="text-gray-600 dark:text-gray-300"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -368,17 +369,17 @@ function WeatherExact() {
                     }));
                   }}
                   // Selected Card
-                  className={`cursor-pointer flex-shrink-0  flex flex-col items-center justify-center rounded-lg px-5 py-2 transition ${
+                  className={`cursor-pointer flex-shrink-0 flex flex-col items-center justify-center rounded-lg px-5 py-2 transition ${
                     uiState.selectedDay === dateKey
-                      ? "bg-slate-50 "
-                      : "  text-black"
+                      ? "bg-slate-50 dark:bg-gray-700"
+                      : "text-black dark:text-white"
                   }`}
                 >
                   <p
                     className={`text-lg font-normal ${
                       uiState.selectedDay !== dateKey
-                        ? "text-black"
-                        : "text-black"
+                        ? "text-black dark:text-white"
+                        : "text-black dark:text-white"
                     } `}
                   >
                     {label}
@@ -392,11 +393,11 @@ function WeatherExact() {
 
                   {/* Temperature Text */}
                   <div className="flex flex-row gap-2 text-sm">
-                    <p className="text-md font-normal text-black">
+                    <p className="text-md font-normal text-black dark:text-white">
                       {preview.temp}
                       {unitSymbols[unit].temp}
                     </p>
-                    <p className="text-slate-500">
+                    <p className="text-slate-500 dark:text-slate-400">
                       {preview.temp_min}
                       {unitSymbols[unit].temp}
                     </p>
